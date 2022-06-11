@@ -120,6 +120,70 @@ GROUP BY city
 ORDER BY count(patient_id) DESC;
 
 -- MEDIUM-10: Show first name, last name and role of every person that is either patient or physician. The roles are either "Patient" or "Physician" 
+SELECT first_name, last_name, 'Patient' as 'Role' FROM patients
+UNION
+SELECT first_name, last_name, 'Physician' as 'Role' FROM physicians;
+
+-- MEDIUM-11: Show the city and the total number of patients in the city in the order from most to least patients.
+SELECT city, COUNT(*) AS num_patients
+  FROM patients
+  GROUP BY city
+  ORDER BY num_patients DESC;
+  
+-- MEDIUM-12: Show all allergies ordered by popularity. Remove 'NKA' and NULL values from query.
+-- Ans1
+SELECT allergies, COUNT(*) as total_diagnosis FROM patients
+WHERE NOT allergies ='NKA' AND allergies NOT NULL
+GROUP BY allergies
+ORDER BY total_diagnosis DESC
+
+-- Ans2
+select allergies, count(allergies) as total_diagnosis
+from patients
+where allergies is not 'NKA' and allergies is not NULL
+group by allergies
+order by total_diagnosis desc;
+
+-- MEDIUM-13: Show all patient's first_name, last_name, and birth_date who were born in the 1970s decade. Sort the list starting from the earliest birth_date.
+-- Ans1
+SELECT first_name, last_name, birth_date FROM patients
+WHERE YEAR(birth_date) between 1970 and 1979
+ORDER BY birth_date ASC;
+
+-- Ans2
+SELECT FIRST_NAME, LAST_NAME, BIRTH_DATE FROM PATIENTS
+WHERE YEAR(BIRTH_DATE) LIKE '197%'
+ORDER BY BIRTH_DATE ASC;
+
+
+-- MEDIUM-14: We want to display each patient's full name in a single column. Their last_name in all upper letters must appear first, then first_name in all lower case letters. Separate the last_name and first_name with a comma. Order the list by the first_name in decending order
+-- EX: SMITH,jane
+SELECT CONCAT(UPPER(last_name),',',LOWER(first_name)) as new_name_format FROM patients
+ORDER BY first_name DESC;
+
+-- MEDIUM-15: Show the cities where the patient's average weight, rounded-up, is less than 70kg. Sort the list by highest to lowest avg_weight.
+SELECT city, CEIL(AVG(weight)) as avg_weight
+FROM patients
+GROUP BY city
+HAVING avg_weight < 70
+ORDER BY avg_weight desc;
+
+-- MEDIUM-16: Show the province_id(s), sum of height; where the total sum of its patient's height is greater than or equal to 7,000.
+SELECT province_id, SUM(height) as sum_height
+FROM patients
+GROUP BY province_id
+HAVING sum_height >= 7000;
+
+-- MEDIUM-17: Show the difference between the largest weight and smallest weight for patients with the last name 'Maroni'.
+SELECT (MAX(weight) - MIN(weight)) as weight_delta
+FROM patients
+WHERE last_name = 'Maroni';
+
+-- MEDIUM-18: Based on the cities that our patients live in, show unique cities that are in province_id 'NS'?
+SELECT DISTINCT(city) as unique_cities
+FROM patients
+WHERE province_id = 'NS';
+  
   
   
 
