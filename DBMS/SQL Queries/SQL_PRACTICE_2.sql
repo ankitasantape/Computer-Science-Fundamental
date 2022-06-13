@@ -183,9 +183,173 @@ WHERE last_name = 'Maroni';
 SELECT DISTINCT(city) as unique_cities
 FROM patients
 WHERE province_id = 'NS';
+
+-- HARD-1: Show all of the patients grouped into weight groups. Show the total amount of patients in each weight group. Order the list by the weight group decending.
+-- For example, if they weight 100 to 109 they are placed in the 100 weight group, 110-119 = 110 weight group, etc.
+
+--Ans1:
+SELECT count(patient_id) as patients_in_group, 
+
+( case 
+  when(weight >= 0 and weight < 10) then 0
+  when(weight >= 10 and weight < 20) then 10
+  when(weight >= 20 and weight < 30) then 20
+  when(weight >= 30 and weight < 40) then 30
+  when(weight >= 40 and weight < 50) then 40
+  when(weight >= 50 and weight < 60) then 50
+  when(weight >= 60 and weight < 70) then 60
+  when(weight >= 70 and weight < 80) then 70
+  when(weight >= 80 and weight < 90) then 80
+  when(weight >= 90 and weight < 100) then 90
+  when(weight >= 100 and weight < 110) then 100
+  when(weight >= 110 and weight < 120) then 110
+  when(weight >= 120 and weight < 130) then 120
+  when(weight >= 130 and weight < 140) then 130
+  end
+) 
+as weight_group
+from patients
+group by weight_group
+order by weight_group desc;
+
+--Ans2:
+SELECT COUNT(*) AS patients_in_group, weight/10*10 AS weight_group FROM patients
+  GROUP BY weight_group
+  ORDER BY weight_group desc;
+  -- Because weight is a integer, dividing by 10 automatically rounds down. We then multiply it by 10 to make their weight rounded down to the tens.
+  -- If weight was a decimal number we could solve this by doing FLOOR(weight/10)*10
   
   
-  
+-- HARD-2: Show patient_id, weight, height, isObese from the patients table.
+-- Display isObese as a boolean 0 or 1.
+-- Obese is defined as weight(kg)/(height(m)2) >= 30.
+-- weight is in units kg.
+-- height is in units cm.
+
+-- Ans1
+SELECT patient_id, weight, height, 
+( cast(weight as float)/power((cast(height as float)/100),2) >= 30) as isObese
+from patients;
+
+-- Ans2
+SELECT patient_id, weight, height, 
+  (CASE 
+      WHEN weight/(POWER(height/100.0,2)) >= 30 THEN
+          1
+      ELSE
+          0
+      END) AS isObese
+FROM patients;
+
+-- HARD-3: Show patient_id, first_name, last_name, and attending physician's specialty.
+-- Show only the patients who has a primary_diagnosis as 'Dementia' and the physician's first name is 'Lisa'
+-- Check patients, admissions, and physicians tables for required information.
+-- Ans1  
+SELECT pt.patient_id, pt.first_name, pt.last_name, phy.specialty
+from ((admissions as adm inner join patients as pt on adm.patient_id is pt.patient_id )
+       inner join physicians as phy on adm.attending_physician_id is phy.physician_id)
+where adm.primary_diagnosis = 'Dementia' and phy.first_name is 'Lisa';
+
+-- Ans2
+SELECT p.patient_id, p.first_name as patient_first_name, p.last_name as patient_last_name, ph.specialty as attending_physician_specialty FROM patients p
+  JOIN admissions a ON a.patient_id = p.patient_id
+  JOIN physicians ph ON ph.physician_id = a.attending_physician_id
+  WHERE primary_diagnosis = 'Dementia' AND ph.first_name = 'Lisa';
+
+-- HARD-4: All patients who have gone through admissions, can see their medical documents on our site. Those patients are given a temporary password after their first admission. Show the patient_id and temp_password.
+-- The password must be the following, in order:
+-- 1. patient_id
+-- 2. the numerical length of patient's last_name
+-- 3. year of patient's birth_date
+
+--Ans1: 
+select distinct(pt.patient_id), concat(pt.patient_id,length(pt.last_name),year(pt.birth_date)) as temp_password
+from admissions as adm inner join patients as pt on adm.patient_id is pt.patient_id;
+      
+--Ans2:
+SELECT DISTINCT P.patient_id, CONCAT(P.patient_id, LEN(last_name), YEAR(birth_date)) AS temp_password
+FROM patients P INNER JOIN admissions A ON A.patient_id = P.patient_id
+     
+-- HARD-5: Each admission costs $50 for patients without insurance, and $10 for patients with insurance. All patients with an even patient_id have insurance.
+-- Give each patient a 'Yes' if they have insurance, and a 'No' if they don't have insurance. Add up the admission_total cost for each has_insurance group. 
+
+--Ans1:
+select 
+     ( case
+         when patient_id % 2 is 0 then 'Yes'
+         when patient_id % 2 is not 0 then 'No'
+     end ) as has_insurance, 
+     (sum( case
+         when patient_id % 2 is 0 then 10
+         when patient_id % 2 is not 0 then 50
+     end )) as cost_after_insurance
+from admissions
+group by has_insurance;
+
+--Ans2
+SELECT 
+CASE WHEN patient_id % 2 = 0 Then 
+    'Yes'
+ELSE 
+    'No' 
+END as has_insurance,
+SUM(CASE WHEN patient_id % 2 = 0 Then 
+    10
+ELSE 
+    50 
+END) as cost_after_insurance
+FROM admissions 
+GROUP BY has_insurance;
+
+
+-- HARD-6: Show the provinces that has more patients identified as 'M' than 'F'. Must only show full province_name.
+--Ans1
+SELECT
+pr.province_name
+FROM
+patients as pa
+JOIN
+provinces as pr
+ON
+pa.province_id = pr.province_id
+GROUP BY
+pr.province_name
+HAVING
+COUNT(CASE WHEN gender = 'M' THEN 1 END) > COUNT(CASE WHEN gender = 'F' THEN 1 END);
+
+-- HARD-7: We are looking for a specific patient. Pull all columns for the patient who matches the following criteria:
+-- - First_name contains an 'r' after the first two letters.
+-- - Identifies their gender as 'F'
+-- - Born in February, May, or December
+-- - Their weight would be between 60kg and 80kg
+-- - Their patient_id is an odd number
+-- - They are from the city 'Halifax'
+
+-- Ans1:
+SELECT * FROM patients
+WHERE
+first_name LIKE '__r%'
+AND gender = 'F'
+AND MONTH(birth_date) IN (2,5,12)
+AND weight BETWEEN 60 AND 80
+AND patient_id % 2 = 1
+AND city = 'Halifax';
+
+-- HARD-8: Show the percent of patients that have 'M' as their gender. Round the answer to the nearest hundreth number and in percent form.
+-- Ans1:
+select 
+concat(
+  Round(
+    cast(count(case when gender is "M" then 1 end) as float) 
+    / 
+    cast(count(*) as float) * 100, 2),"%") as percent_of_male_patients from patients;
+
+-- Ans2:
+SELECT
+CONCAT(ROUND((SELECT COUNT(*) FROM patients WHERE gender = 'M')/(CAST(COUNT(*) as float)),4)*100,'%') as percent_of_male_patients
+FROM patients;
+
+
 
 
 
