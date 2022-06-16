@@ -35,8 +35,14 @@ SELECT first_name,last_name,province_name FROM patients
 JOIN provinces on provinces.province_id = patients.province_id;
 
 -- EASY-9: Show how many patients have a birth_date with 2010 as the birth year. 
+--Ans1
 SELECT COUNT(*) as total_patients FROM patients
 WHERE YEAR(birth_date) = 2010;
+
+--Ans2
+select 
+count( case when year(birth_date) is 2010 then 1 end )
+from patients;
 
 -- EASY-10: Show the first_name, last_name, and height of the patient with the greatest height.
 SELECT first_name, last_name, MAX(height) as height
