@@ -317,6 +317,21 @@ pr.province_name
 HAVING
 COUNT(CASE WHEN gender = 'M' THEN 1 END) > COUNT(CASE WHEN gender = 'F' THEN 1 END);
 
+--Ans2
+select 
+pv.province_name
+from 
+patients as pt 
+join 
+provinces as pv
+on 
+pt.province_id = pv.province_id
+group by 
+pt.province_id
+having 
+count(case when gender is 'M' then 1 end) > count(case when gender is 'F' then 1 end);
+
+
 -- HARD-7: We are looking for a specific patient. Pull all columns for the patient who matches the following criteria:
 -- - First_name contains an 'r' after the first two letters.
 -- - Identifies their gender as 'F'
