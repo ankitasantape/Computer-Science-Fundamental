@@ -56,6 +56,17 @@ WHERE patient_id IN (1,45,534,879,1000);
 SELECT COUNT(*) as total_admissions
 FROM admissions;
 
+-- EASY-13: Show all the columns from admissions where the patient was admitted and discharged on the same day.
+SELECT *
+FROM admissions
+WHERE admission_date = discharge_date;
+
+-- EASY-14: Show the total number of admissions for patient_id 573.
+SELECT patient_id,
+COUNT(*) AS total_admissions
+FROM admissions
+WHERE patient_id = 573;
+
 -- MEDIUM-1: Show unique birth years from patients and order them by ascending.
 SELECT DISTINCT YEAR(birth_date) AS birth_year FROM patients 
 ORDER BY birth_year;
@@ -189,6 +200,102 @@ WHERE last_name = 'Maroni';
 SELECT DISTINCT(city) as unique_cities
 FROM patients
 WHERE province_id = 'NS';
+
+-- MEDIUM-19: Show all of the month's day numbers and how many admission_dates occurred on that number. Sort by the day with most admissions to least admissions.
+SELECT DAY(admission_date) AS day_number,
+COUNT(*) AS number_of_admissions
+FROM admissions
+GROUP BY day_number
+ORDER BY number_of_admissions DESC
+
+-- MEDIUM-20: Show the patient_id, nursing_unit_id, room, and bed for patient_id 542's most recent admission_date.
+--ANS1:
+SELECT
+  patient_id,
+  nursing_unit_id,
+  room,
+  bed
+FROM admissions
+WHERE patient_id = 542
+GROUP BY patient_id
+HAVING
+  admission_date = MAX(admission_date);
+  
+--ANS2:
+SELECT
+  patient_id,
+  nursing_unit_id,
+  room,
+  bed
+FROM admissions
+WHERE
+  patient_id = '542'
+  AND admission_date = (
+    SELECT MAX(admission_date)
+    FROM admissions
+    WHERE patient_id = '542'
+  )
+  
+--ANS3:
+SELECT
+  patient_id,
+  nursing_unit_id,
+  room,
+  bed
+FROM admissions
+WHERE patient_id = 542
+ORDER BY admission_date DESC
+LIMIT 1
+
+--ANS4:
+SELECT
+  patient_id,
+  nursing_unit_id,
+  room,
+  bed
+FROM admissions
+GROUP BY patient_id
+HAVING
+  patient_id = 542
+  AND max(admission_date)
+  
+-- MEDIUM-21:  Show the nursing_unit_id and count of admissions for each nursing_unit_id. Exclude the following nursing_unit_ids: 'CCU', 'OR', 'ICU', 'ER'.
+--ANS1:
+SELECT
+  nursing_unit_id,
+  COUNT(*) AS total_admissions
+FROM admissions
+WHERE
+  nursing_unit_id NOT IN ('CCU', 'OR', 'ICU', 'ER')
+GROUP BY nursing_unit_id;
+
+--ANS2:
+SELECT
+  nursing_unit_id,
+  count(*) count_of_admissions
+FROM admissions
+GROUP BY nursing_unit_id
+HAVING
+  nursing_unit_id NOT IN ('CCU', 'OR', 'ICU', 'ER');
+  
+-- MEDIUM-22: Show patient_id, attending_physician_id, and primary_diagnosis for admissions that match one of the two criteria:
+-- 1. patient_id is an odd number and attending_physician_id is either 1, 5, or 19.
+-- 2. attending_physician_id contains a 2 and the length of patient_id is 3 characters. '
+SELECT
+  patient_id,
+  attending_physician_id,
+  primary_diagnosis
+FROM admissions
+WHERE
+  (
+    attending_physician_id IN (1, 5, 19)
+    AND patient_id % 2 != 0
+  )
+  OR 
+  (
+    attending_physician_id LIKE '%2%'
+    AND len(patient_id) = 3
+  )
 
 -- HARD-1: Show all of the patients grouped into weight groups. Show the total amount of patients in each weight group. Order the list by the weight group decending.
 -- For example, if they weight 100 to 109 they are placed in the 100 weight group, 110-119 = 110 weight group, etc.
@@ -369,6 +476,17 @@ concat(
 SELECT
 CONCAT(ROUND((SELECT COUNT(*) FROM patients WHERE gender = 'M')/(CAST(COUNT(*) as float)),4)*100,'%') as percent_of_male_patients
 FROM patients;
+
+-- HARD-9: Show the patient_id and total_spent for patients who spent over 150 in combined medication_cost. Sort by most total_spent to least total_spent.
+-- ANS1: 
+SELECT
+  patient_id,
+  SUM(medication_cost) AS total_spent
+FROM unit_dose_orders udo
+  JOIN medications me ON udo.medication_id = me.medication_id
+GROUP BY patient_id
+HAVING total_spent > 150
+ORDER BY total_spent DESC;
 
 
 
