@@ -67,6 +67,37 @@ COUNT(*) AS total_admissions
 FROM admissions
 WHERE patient_id = 573;
 
+-- EASY-15: Write a query to find the first_name, last name and birth date of patients who have height more than 160 and weight more than 70
+SELECT 
+      first_name, 
+      last_name, 
+      birth_date
+FROM patients
+WHERE 
+      height > 160 AND weight > 70;
+
+-- EASY-16: Write a query to find list of patients first_name, last_name, and allergies from Hamilton where allergies are not nka or null
+SELECT first_name,
+       last_name, 
+       allergies
+FROM patients
+WHERE 
+     city IS 'Hamilton' 
+     AND allergies IS NOT NULL 
+     AND allergies != 'NKA';
+   
+ -- OR
+ 
+SELECT 
+       first_name, 
+       last_name,
+       allergies
+FROM patients
+WHERE 
+      city IS 'Hamilton' 
+      AND allergies IS NOT null
+      AND allergies IS NOT 'NKA';
+
 -- MEDIUM-1: Show unique birth years from patients and order them by ascending.
 SELECT DISTINCT YEAR(birth_date) AS birth_year FROM patients 
 ORDER BY birth_year;
@@ -80,6 +111,10 @@ SELECT first_name FROM patients GROUP BY first_name HAVING COUNT(first_name) = 1
 -- Ans1
 SELECT patient_id, first_name FROM patients
 WHERE first_name LIKE 's____%s';
+-- or
+
+SELECT patient_id, first_name FROM patients
+WHERE first_name LIKE 's%____s';
 
 -- Ans2
 SELECT patient_id, first_name FROM patients
@@ -96,6 +131,18 @@ ON pt.patient_id IS adm.patient_id AND
 SELECT patients.patient_id, first_name, last_name FROM patients
 JOIN admissions ON admissions.patient_id = patients.patient_id
 WHERE primary_diagnosis = 'Dementia';
+
+-- Ans3
+SELECT 
+      pt.patient_id, 
+      pt.first_name, 
+      pt.last_name
+FROM 
+     patients AS pt, 
+     admissions AS ad
+WHERE 
+     ad.primary_diagnosis IS 'Dementia'
+     AND ad.patient_id = pt.patient_id;
 
 -- MEDIUM-5: Show patient_id, first_name, last_name from the patients table. Order the rows by the first_name ascending and then by the last_name descending.
 SELECT patient_id, first_name, last_name FROM patients
@@ -159,6 +206,14 @@ select allergies, count(allergies) as total_diagnosis
 from patients
 where allergies is not 'NKA' and allergies is not NULL
 group by allergies
+order by total_diagnosis desc;
+
+-- Ans3
+select allergies, count(patient_id) as total_diagnosis
+from patients
+group by allergies
+having allergies is not null
+      and allergies is not 'NKA'
 order by total_diagnosis desc;
 
 -- MEDIUM-13: Show all patient's first_name, last_name, and birth_date who were born in the 1970s decade. Sort the list starting from the earliest birth_date.
@@ -296,6 +351,12 @@ WHERE
     attending_physician_id LIKE '%2%'
     AND len(patient_id) = 3
   )
+  
+-- MEDIUM-23: Display every patient's first_name. Order the list by the length of each name and then by alphbetically
+
+select first_name
+FROM patients
+ORDER BY LENGTH(first_name) ASC, first_name ASC;
 
 -- HARD-1: Show all of the patients grouped into weight groups. Show the total amount of patients in each weight group. Order the list by the weight group decending.
 -- For example, if they weight 100 to 109 they are placed in the 100 weight group, 110-119 = 110 weight group, etc.
