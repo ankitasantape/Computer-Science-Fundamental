@@ -555,6 +555,30 @@ GROUP BY patient_id
 HAVING total_spent > 150
 ORDER BY total_spent DESC;
 
+-- HARD-10: Provide the description of each item, along with the total cost of the quantity on hand (rounded to the nearest whole dollar), 
+-- and the associated primary vendor. Sort the output by the most spent to the least spent on inventory.
+-- Ans1: 
+SELECT
+  i.item_description,
+  ROUND(i.item_cost * i.quantity_on_hand, 0) as total_cost,
+  v.vendor_name
+FROM items i
+  JOIN vendors v ON i.primary_vendor_id = v.vendor_id
+GROUP BY i.item_description
+ORDER BY total_cost DESC;
+
+-- HARD-11: For each day display the total amount of admissions on that day. Display the amount changed from the previous date.
+WITH admission_counts_table AS (
+  SELECT admission_date, COUNT(patient_id) AS admission_count
+  FROM admissions
+  GROUP BY admission_date
+  ORDER BY admission_date DESC
+)
+select
+  admission_date, 
+  admission_count, 
+  admission_count - LAG(admission_count) OVER(ORDER BY admission_date) AS admission_count_change 
+from admission_counts_table
 
 
 
