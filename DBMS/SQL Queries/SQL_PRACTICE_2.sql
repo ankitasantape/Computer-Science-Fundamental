@@ -399,6 +399,31 @@ FROM patients
 GROUP BY weight_group
 GROUP BY weight_group DESC;
   
+--Ans4:
+SELECT
+  COUNT(*) AS patients_in_group,
+  FLOOR(weight / 10) * 10 AS weight_group
+FROM patients
+GROUP BY weight_group
+ORDER BY weight_group DESC;
+
+--Ans5:
+SELECT
+  TRUNCATE(weight, -1) AS weight_group,
+  count(*)
+FROM patients
+GROUP BY weight_group
+ORDER BY weight_group DESC;
+
+--Ans6:
+SELECT
+  count(patient_id),
+  weight - weight % 10 AS weight_group
+FROM patients
+GROUP BY weight_group
+ORDER BY weight_group DESC
+
+
 -- HARD-2: Show patient_id, weight, height, isObese from the patients table.
 -- Display isObese as a boolean 0 or 1.
 -- Obese is defined as weight(kg)/(height(m)2) >= 30.
