@@ -393,6 +393,12 @@ SELECT COUNT(*) AS patients_in_group, weight/10*10 AS weight_group FROM patients
   -- Because weight is a integer, dividing by 10 automatically rounds down. We then multiply it by 10 to make their weight rounded down to the tens.
   -- If weight was a decimal number we could solve this by doing FLOOR(weight/10)*10
   
+--Ans3:
+SELECT COUNT() AS patients_in_group, 
+       weight/10*10 AS weight_group
+FROM patients
+GROUP BY weight_group
+GROUP BY weight_group DESC;
   
 -- HARD-2: Show patient_id, weight, height, isObese from the patients table.
 -- Display isObese as a boolean 0 or 1.
