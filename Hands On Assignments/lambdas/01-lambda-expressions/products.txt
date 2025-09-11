@@ -1,0 +1,30 @@
+FOOD       Oranges          $   1.65
+FOOD       Gouda cheese     $   6.79
+UTENSILS   Plates           $  12.95
+CLEANING   Detergent        $   3.79
+FOOD       Soft drink       $   1.99
+OFFICE     Pencils          $   5.79
+FOOD       Rice             $   2.99
+CLEANING   Scourer          $   2.29
+FOOD       Milk             $   1.39
+OFFICE     Notebook         $   4.99
+FOOD       Tea              $   4.29
+FOOD       Tomato sauce     $   1.39
+FOOD       Peanut butter    $   2.39
+FOOD       Red bell pepper  $   0.99
+UTENSILS   Spoons           $  14.95
+OFFICE     Adhesive tape    $   5.39
+CLEANING   Dish brush       $   3.49
+UTENSILS   Knives           $   9.95
+FOOD       Brown bread      $   3.99
+FOOD       Potatoes         $   1.59
+CLEANING   Dishcloth        $   2.59
+FOOD       Apples           $   1.29
+OFFICE     Ballpoint pens   $   6.79
+FOOD       Spaghetti        $   2.79
+UTENSILS   Forks            $  14.95
+UTENSILS   Paper towel      $   3.69
+FOOD       Coffee           $   7.49
+OFFICE     Highlighter      $   2.29
+FOOD       Orange juice     $   3.49
+FOOD       Spring water     $   0.99

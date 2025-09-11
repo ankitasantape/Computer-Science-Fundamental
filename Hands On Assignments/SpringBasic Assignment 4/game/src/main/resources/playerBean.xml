@@ -1,0 +1,49 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Define Countries -->
+    <bean id="country1" class="com.assignment3.game.Country">
+        <property name="countryId" value="C001"/>
+        <property name="countryName" value="India"/>
+    </bean>
+
+    <bean id="country2" class="com.assignment3.game.Country">
+        <property name="countryId" value="C002"/>
+        <property name="countryName" value="Australia"/>
+    </bean>
+
+    <!-- Define Players -->
+    <bean id="player1" class="com.assignment3.game.Player">
+        <property name="playerId" value="P001"/>
+        <property name="playerName" value="Sachin"/>
+        <property name="country" ref="country1"/>
+    </bean>
+
+    <bean id="player2" class="com.assignment3.game.Player">
+        <property name="playerId" value="P002"/>
+        <property name="playerName" value="Dhoni"/>
+        <property name="country" ref="country1"/>
+    </bean>
+
+    <bean id="player3" class="com.assignment3.game.Player">
+        <property name="playerId" value="P003"/>
+        <property name="playerName" value="Smith"/>
+        <property name="country" ref="country2"/>
+    </bean>
+
+    <bean id="player4" class="com.assignment3.game.Player">
+        <property name="playerId" value="P004"/>
+        <property name="playerName" value="Warner"/>
+        <property name="country" ref="country2"/>
+    </bean>
+
+    <bean id="player5" class="com.assignment3.game.Player">
+        <property name="playerId" value="P005"/>
+        <property name="playerName" value="Maxwell"/>
+        <property name="country" ref="country2"/>
+    </bean>
+
+</beans>
