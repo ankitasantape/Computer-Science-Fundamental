@@ -1,0 +1,23 @@
+Producer:
+==========
+
+Header:
+ __TypeId__:"com.acme.notificationservice.model.NotificationCreatedEvent"
+
+==========
+Consumer:
+==========
+spring.json.value.default.type -->hardcode this value
+
+=======================================
+Kafka byte[] ->ErrorHandlingDeserializer->JsonDeSerializer->Your Java Object
+
+ <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+</dependency>
+
+====================================================================
+
+
+Producer -> Kafka -> Consumer -> Audit ->Status (Update)

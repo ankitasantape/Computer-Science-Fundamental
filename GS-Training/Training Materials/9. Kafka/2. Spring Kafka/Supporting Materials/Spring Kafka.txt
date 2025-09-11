@@ -1,0 +1,97 @@
+Spring Kafka
+================
+
+Start Zookeeper
+==============
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+
+Start Apache Kafka
+=====================
+wsl --distribution Ubuntu
+
+bin/kafka-server-start.sh config/server.properties
+
+WSL2 IP:
+=========
+# ip addr | grep eth0 - just for reference
+ip addr | grep inet
+==>  172.26.245.121
+
+Check if IPv6 is enabled or disabled, from a terminal window: 
+===========================================================
+
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6 
+
+if it is '0'
+sudo sysctl -p -- If it is already set in configuration file.
+
+Otherwise
+=========
+sudo nano /etc/sysctl.conf
+===> 
+net.ipv6.conf.lo.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.all.disable_ipv6=1
+
+
+List Topics 
+=============
+
+bin/kafka-topics.sh --list --bootstrap-server  172.26.245.121:9092
+                                             <-advertised listener - same as in config/server.properties -->
+
+Delete Topic
+================
+bin/kafka-topics.sh --delete --topic notifications --bootstrap-server  172.26.242.23:9092
+
+
+Display messages in topic
+======================
+bin/kafka-console-consumer.sh --bootstrap-server  172.26.245.121:9092 --topic notifications --from-beginning
+
+
+ netstat -an | grep 9092
+
+To find the Windows IP accessible from WSL2
+============================================
+cat /etc/resolv.conf | grep nameserver
+Or
+==
+ip route | grep default
+
+
+POST Request
+=================
+# curl -X POST http://<Windows_IP>:8181/api/notifications -H "Content-Type: text/plain" -d "Hello from Notification Service"
+
+curl -X POST http://172.26.240.1:8083/api/notifications -H "Content-Type: text/plain" -d "Hello from Notification Service "
+
+
+Stop Kafka Server
+=====================
+pkill -f kafka.Kafka
+
+Stop Kafka Zookeeper
+=====================
+
+pkill -f zookeeper
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+.setUserAgent("Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36")
+
+.setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1");
+
+public enum DevicesEnum {
+        IPHONE_X(375, 812, "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1");
+
+        private final int width;
+        private final int height;
+        private final String userAgent;
+
+        // Constructor for the enum
+        DevicesEnum(int width, int height, String userAgent) {
+            this.width = width;
+            this.height = height;
+            this.userAgent = userAgent;
+        }
+
+        // Common base options
+        private Browser.NewContextOptions base() {
+            return new Browser.NewContextOptions()
+                    .setIsMobile(true)
+                    .setHasTouch(true);
+        }
+
+        public Browser.NewContextOptions get() {
+            return base()
+                    .setViewportSize(width, height)
+                    .setUserAgent(userAgent);
+        }
+    }
+}

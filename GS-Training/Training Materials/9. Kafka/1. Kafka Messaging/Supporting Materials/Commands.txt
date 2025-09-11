@@ -1,0 +1,195 @@
+2. Understanding Topics, Producers and Consumers
+==================================================
+
+Ubuntu => 
+
+ls
+
+cd kafka_2.13-3.0.0
+
+ls
+
+cd libs
+
+ls
+
+cd ..
+
+ls
+
+cd config
+
+ls
+
+cat server.properties
+
+cd ..
+
+ls
+
+cd bin
+
+ls
+
+cd windows
+
+ls
+
+cd ..
+
+ls
+
+cd ..
+
+bin/zookeeper-server-start.sh 
+
+cd config 
+
+ls
+
+cd ..
+
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+
+Shell 1 => 
+
+wsl -l
+
+wsl --distribution Ubuntu 
+
+pwd
+
+cd ~
+
+cd ~/kafka_2.13-3.0.0/config
+
+telnet localhost 2181
+
+srvr
+
+
+Start Apache Kafka
+=====================
+
+cd ..
+
+bin/kafka-server-start.sh config/server.properties
+
+
+Shell 2 => 
+
+wsl -l
+
+wsl --distribution Ubuntu 
+
+pwd
+
+cd ~
+
+ls
+
+cd kafka_2.13-3.0.0
+
+ls
+
+bin/kafka-topics.sh
+
+bin/kafka-topics.sh --create  --topic my_topic --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
+
+cd /tmp/kafka-logs
+
+ls
+
+cd my_topic-0
+
+ls
+
+cd ~
+
+ls
+
+cd  kafka_2.13-3.0.0
+
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --list my_topic 
+
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic my_topic -- Deprecated
+
+bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my_topic
+
+>MyMessage 1
+>MyMessage 2
+>MyMessage 3
+>Anything goes here...
+
+
+Shell 3 => 
+
+wsl --distribution Ubuntu 
+
+
+cd ~/kafka_2.13-3.0.0
+
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my_topic --from-beginning
+
+
+Shell 2=>
+
+>MyMessage 4
+>MyMessage 5
+>MyMessage 6
+>MyMessage 7
+>MyMessage 8 and so on
+
+
+Shell 3=>
+
+cd /tmp/kafka-logs
+
+ls
+
+cd my_topic-0
+
+ls
+
+cat *.log
+
+Shut down the Kafka server(s) first: This ensures that Kafka brokers are no longer processing any data, and no new data is being written.
+=========================================================================================================================================
+Shutting Down Kafka
+============================
+Stop the Kafka server by running the following command in the terminal:
+
+cd ~
+
+cd kafka_2.13-3.0.0
+
+bin/kafka-server-stop.sh
+
+Then shut down the ZooKeeper server: Once all Kafka brokers are stopped, you can safely stop ZooKeeper.
+=========================================================================================================
+Shutting Down ZooKeeper
+=============================
+Stop the ZooKeeper server by running the following command in the terminal:
+
+bin/zookeeper-server-stop.sh
+
+===================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+git config --system core.longpaths true
+
+git config --global core.longpaths true
+
+
+==================================================
+
+Enable Long Paths on Windows - Policy
+==================================
+Open the Run dialog (Win + R), type gpedit.msc, and press Enter.
+Navigate to:
+
+Local Computer Policy -> Computer Configuration -> Administrative Templates -> System -> Filesystem
+Find the policy named Enable Win32 long paths.
+Double-click it and set it to Enabled.
+Restart your computer.
+
+========================================================
+Clone with Long Paths Enabled:
+
+Use the command: git clone -c core.longpaths=true <repository-url>
+
+=======================================================
+Enable Long Paths in Windows - regedit
+
+Open the Registry Editor (type regedit in the Run dialog).
+
+Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem.
+
+Double-click on LongPathsEnabled and set its value to 1.
+
+Restart your computer.
+=================================================================
